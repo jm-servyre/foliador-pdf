@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div id="action-row">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h1>Foliador PDF Web</h1>
+
+        {% if not pdf_processor_available %}
+        <div class="instruction-card full-width-card">
+            <p><strong>⚠️ Advertencia:</strong> La librería `pdf_processor` (o sus dependencias como `pypdf`/`reportlab`) no se pudo cargar. El foliado principal no funcionará hasta que se solucione este problema en el servidor.</p>
+        </div>
+        {% endif %}
+        
+        <label id="drag-drop-label" for="pdf_file_drag" class="dropzone-large">
+            <span class="drag-icon">📁</span> 
+            Arrastra tu archivo PDF aquí o haz clic para seleccionar.
+            <input type="file" id="pdf_file_drag" accept="application/pdf" style="display: none;">
+        </label>
+    </div>
+    
+    
+    <div id="config-and-preview-section" style="display: none;">
+        
+        <form id="foliator-form" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
+            
+            <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf" style="display: none;">
+            
+            <div id="config-col-full">
+                <h2>1. Configuración del Foliado</h2>
+                
+                <label for="start_number">Número de folio inicial:</label>
+                <input type="number" id="start_number" name="start_number" value="1" min="1" required>
+                <p class="help-text">El número tiene formato de 4 dígitos (ej: 1 = 0001).</p>
+                
+                <div class="control-group-split">
+                    <div>
+                        <label for="start_page">Página inicial a foliar:</label>
+                        <input type="number" id="start_page" name="start_page" value="1" min="1">
+                        <p class="help-text">Página del PDF donde comienza (1 para inicio).</p>
+                    </div>
+                    <div>
+                        <label for="end_page">Página final a foliar:</label>
+                        <input type="number" id="end_page" name="end_page">
+                        <p class="help-text">Deja vacío para foliar hasta el final.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="style-col-full">
+                <h2>2. Estilo y Posición</h2>
+                
+                <div class="control-group-split">
+                    <div>
+                        <label for="font_size">Tamaño de Fuente:</label>
+                        <input type="number" id="font_size" name="font_size" value="14" min="8" max="72">
+                        <p class="help-text">Tamaño de Fuente ( 8 a 72)</p>
+                    </div>
+                    <div>
+                        <label for="offset">Margen Lateral (cm):</label>
+                        <input type="number" id="offset" name="offset" value="1.0" min="0.5" max="5.0" step="0.1">
+                        <p class="help-text">Margen (0.5 a 5.0 cm)</p>
+                    </div>
+                </div>
+                
+                <div class="control-group-split">
+                    <div>
+                        <label for="corner">Esquina de Posición:</label>
+                        <select id="corner" name="corner">
+                            <option value="bottom-right" selected>Abajo - Derecha</option>
+                            <option value="bottom-left">Abajo - Izquierda</option>
+                            <option value="top-right">Arriba - Derecha</option>
+                            <option value="top-left">Arriba - Izquierda</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="orientation">Orientación:</label>
+                        <select id="orientation" name="orientation">
+                            <option value="horizontal" selected>Horizontal</option>
+                            <option value="vertical">Vertical</option>
+                            
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" id="submit-button" disabled>
+                <span style="font-size: 1.5em;"></span> Foliar y Descargar PDF
+            </button>
+        </form>
+        
+        <div id="preview-col-right">
+            <h2>3. Vista Previa</h2>
+            
+            {% if not pdf_preview_available %}
+            <div class="instruction-card full-width-card" style="background-color: #fff3cd; border-color: #ffeeba;">
+                <p><strong>⚠️ Advertencia de Vista Previa:</strong> La dependencia `pdf2image` (o Poppler) no está disponible en el servidor. La previsualización está deshabilitada.</p>
+            </div>
+            {% endif %}
+            
+            <div id="preview-info-box">
+                <p></p>
+                <div id="simulated-folio-display">
+                    Folio que se aplicará en esta vista: <strong id="current-folio-number">#0001</strong>
+                </div>
+            </div>
+            
+            <div id="preview-container">
+                <p id="preview-message">Sube un PDF para ver la previsualización de la primera página.</p>
+                <img id="preview-image" src="" alt="Vista previa del folio en la primera página">
+            </div>
+            <p class="help-text-preview">Nota: La imagen es de baja resolución solo para verificar la posición y estilo del folio. <br>La calidad del PDF final será la original.</p>
+        </div>
+    </div>
+    
+    <div id="contact-info">
+        <h3></h3>
+        <p></p>
+        <p class="help-text-contact">© Foliador PDF 2025 - Servyre<br>
+            ¿Dudas o sugerencias? Escribeme a: 
+            <a href="mailto:jorge.meneses@servyre.com">jorge.meneses@servyre.com</a>
+        </p>
+    </div>
+    
+    <div id="loading-modal" class="modal">
+        <div class="modal-content">
+            <h3>Procesando Archivo...</h3>
+            <p>Por favor, espera. Esto puede tardar si el archivo es grande.</p>
+            <div class="progress-bar-container">
+                <div id="upload-progress-bar" class="progress-bar"></div>
+                <span id="progress-text">0%</span>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

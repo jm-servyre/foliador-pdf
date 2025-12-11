@@ -1,0 +1,490 @@
+/* static/style.css */
+
+/* --- GENERAL & LAYOUT --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h1 {
+    margin-bottom: 5px; 
+    color: #007bff; /* Azul primario */
+    font-size: 2.2em;
+    text-align: center;
+    padding-top: 20px;
+}
+
+/* Reducimos el margen superior de los títulos H2 */
+h2 {
+    color: #007bff; /* Azul primario */
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+    margin-top: 15px; 
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+/* =====================================================
+--- ZONA DE CARGA INICIAL (ARRRASTRE) ---
+=====================================================*/
+
+#action-row {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto; 
+}
+
+#drag-drop-label.dropzone-large {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px; /* Evita que el layout se mueva al desaparecer */
+    border: 3px dashed #ff8c00; 
+    border-radius: 15px;
+    background-color: #fff9e6; 
+    cursor: pointer;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #ff8c00;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+    text-align: center;
+    padding: 20px;
+}
+
+.drag-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+#drag-drop-label.dropzone-highlight {
+    background-color: #ffe0b2;
+    border-color: #e65100;
+    transform: scale(1.02);
+}
+
+#drag-drop-label.file-loaded {
+    background-color: #e6ffed;
+    border-color: #28a745;
+    color: #28a745;
+    animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.005); opacity: 0.98; }
+}
+
+/* =====================================================
+--- ESTRUCTURA DE CONTENIDO PRINCIPAL (CONFIGURACIÓN/VISTA PREVIA) ---
+=====================================================*/
+
+/* Contenedor principal: define el layout de 2 columnas */
+#config-and-preview-section {
+    display: grid;
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto; 
+    
+    /* BALANCE 50%/50% */
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; /* Reducimos el espacio entre columnas */
+}
+
+/* Tarjeta de Instrucciones (Color Azul Restaurado) */
+.instruction-card {
+    background-color: #e9f5ff; /* Color de fondo azul claro */
+    border: 1px solid #cce5ff; /* Borde azul */
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    font-size: 0.95em;
+}
+
+.instruction-card.full-width-card {
+    grid-column: 1 / -1; 
+    margin: 0 0 20px 0; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#main-workflow-grid {
+    display: contents; 
+}
+
+/* COLUMNA 1: Contenedor del Formulario (Menú Completo) */
+#foliator-form {
+    grid-column: 1 / 2;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    padding: 25px; /* Padding interno ajustado */
+    
+    /* Apilamiento vertical */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    box-sizing: border-box;
+}
+
+/* Separación de las dos secciones */
+#config-col-full {
+    padding-bottom: 20px;
+    margin-bottom: 30px; /* Más separación del Estilo */
+    border-bottom: 1px solid #eee; 
+}
+
+#style-col-full {
+    margin-bottom: 0; 
+    padding-top: 10px;
+}
+
+/* Espaciado de los pares de inputs */
+.control-group-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px; /* Más espacio horizontal entre inputs */
+    margin-bottom: 25px; /* Más espacio vertical entre grupos */
+}
+
+/* --- FORMULARIO Y CONTROLES --- */
+
+label {
+    display: block;
+    margin-bottom: 3px; 
+    margin-top: 10px;
+    font-weight: 600;
+    color: #555;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+input[type="number"]:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.help-text {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 3px;
+    margin-bottom: 15px; 
+}
+
+/* --- BOTÓN DE SUBIDA --- */
+#submit-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-top: auto; /* Empuja el botón al final del contenedor flex */
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#submit-button:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+#submit-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* =====================================================
+--- COLUMNA 2: VISTA PREVIA (AJUSTES DE ALINEACIÓN CORREGIDOS) ---
+=====================================================*/
+#preview-col-right {
+    grid-column: 2 / 3;
+    background-color: white;
+    padding: 25px; /* Padding interno ajustado */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    
+    /* Alineación de texto y elementos de bloque pequeños a la izquierda */
+    text-align: left; 
+    
+    /* VUELVE A FLEX: Permite que el contenedor Grid iguale la altura de la columna */
+    display: flex; 
+    flex-direction: column;
+    
+    box-sizing: border-box;
+    height: 100%; /* Asegura que la columna se estire */
+}
+
+#preview-col-right h2 {
+    border-bottom: none;
+    margin-bottom: 5px;
+}
+
+/* Estilos para la información expandida (del HTML) */
+#preview-info-box {
+    text-align: left;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#preview-info-box h4 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+#simulated-folio-display {
+    background-color: #f0f8ff;
+    border: 1px solid #d0e9ff;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+#simulated-folio-display p {
+    margin: 0;
+}
+
+/* AJUSTE DERECHO: Contenedor de la miniatura (CAJA GRIS) */
+#preview-container {
+    width: 100%;
+    max-width: none; 
+    
+    /* CLAVE para que ocupe el espacio vertical restante dentro de #preview-col-right */
+    flex-grow: 1; 
+    
+    /* Mantenemos el centrado de los contenidos de la miniatura */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrado horizontal de los ítems internos */
+    justify-content: center; /* Centrado vertical de los ítems internos */
+    
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    
+    /* Centrado y margen superior */
+    margin: 15px auto 0 auto; 
+    padding: 10px; 
+    overflow: hidden;
+
+    width: 100%; 
+    height: 100%; 
+    box-sizing: border-box;
+}
+
+#preview-message {
+    text-align: center; 
+    margin: 0; 
+    padding: 10px;
+}
+
+/* AJUSTE DERECHO: La imagen miniatura */
+#preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; 
+    margin: 0;
+    padding: 0;
+    border-radius: 4px;
+    display: none; 
+}
+
+.help-text-preview {
+    font-size: 0.75em;
+    color: #999;
+    margin-top: 15px;
+    /* Forzamos la alineación del texto de nota a la izquierda */
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+/* =====================================================
+--- CORRECCIONES GLOBALES DE MARGEN (FUERA DEL MEDIA QUERY) ---
+=====================================================*/
+
+/* **CORRECCIÓN DE MARGEN IZQUIERDO:** Reseteo Universal de Espaciado en Bloque dentro de la columna de Preview
+   Esto fuerza a que elementos de lista y texto se peguen al borde interno de la caja. */
+#preview-col-right h2,
+#preview-col-right h4,
+#preview-col-right p,
+#preview-col-right div,
+#preview-col-right ul,
+#preview-col-right ol {
+    /* Forzar el reseteo de márgenes y paddings izquierdos que causan el sangrado */
+    margin-left: 0 !important; 
+    padding-left: 0 !important;
+}
+
+/* Permitir que el input/select de la vista previa maneje su propio ancho si es necesario */
+#preview-col-right input, 
+#preview-col-right select {
+    margin-left: initial !important; 
+    padding-left: 10px !important; 
+    width: 100%;
+}
+
+/* Ajuste específico para la caja del folio simulado para que no se vea afectado */
+#simulated-folio-display {
+    margin-left: 0; 
+    padding-left: 8px; 
+}
+
+/* --- MODAL DE CARGA --- */
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    margin-top: 15px;
+    overflow: hidden;
+    position: relative;
+    height: 30px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #007bff;
+    transition: width 0.4s ease;
+}
+
+#progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 30px;
+    color: #333;
+    font-weight: bold;
+    top: 0;
+    left: 0;
+}
+
+/* --- MENSAJES DE NOTIFICACIÓN --- */
+.flash-message {
+    width: 90%;
+    max-width: 1200px;
+    padding: 15px;
+    margin: 10px auto;
+    border-radius: 8px;
+    font-size: 1em;
+    text-align: center;
+}
+
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- INFORMACIÓN DE CONTACTO (ESTILO SIMPLE RESTAURADO) --- */
+#contact-info {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px 0; 
+    border-top: 1px solid #ddd; 
+    background: none; 
+    box-shadow: none; 
+    border-radius: 0;
+    text-align: center;
+}
+
+#contact-info h3 {
+    color: #555;
+    margin-top: 0;
+}
+
+.help-text-contact {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #999;
+    display: block;
+    margin-top: 10px;
+}
+
+/* =====================================================
+--- RESPONSIVE DESIGN (para móviles) ---
+=====================================================*/
+@media (max-width: 800px) {
+    
+    /* El layout principal vuelve a ser vertical en móvil */
+    #config-and-preview-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        width: 100%;
+        padding: 0 10px;
+        display: block !important; 
+    }
+    
+    /* Controles y Vista Previa vuelven a ser de ancho completo */
+    #foliator-form, #preview-col-right {
+        grid-column: 1 / -1;
+        width: 100%;
+        padding: 20px;
+        margin-bottom: 20px;
+        display: block; 
+    }
+    
+    /* Los grupos de control se apilan en móvil */
+    .control-group-split {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    #contact-info, #action-row, .flash-message {
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        box-sizing: border-box;
+    }
+
+    #drag-drop-label.dropzone-large {
+        height: 200px; 
+    }
+}
