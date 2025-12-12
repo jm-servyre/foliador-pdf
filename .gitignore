@@ -1,0 +1,24 @@
+# Ignorar archivos del sistema
+DS_Store
+Thumbs.db
+
+# Ignorar dependencias de Node.js
+node_modules/
+
+# Ignorar archivos de configuración local
+env
+
+# Ignorar archivos temporales
+*.log
+*.tmp
+
+# Ignorar Carpetas
+/__pycache__
+
+# Si un archivo ya fue rastreado por Git antes de ser añadido al .gitignore, 
+# seguirá apareciendo en el repositorio. Para dejar de rastrearlo, puedes usar el comando:
+
+# git rm --cached nombre-del-archivo
+
+# Luego, realiza un commit para aplicar los cambios:
+# git commit -m "Eliminar archivo del repositorio y aplicar .gitignore"
